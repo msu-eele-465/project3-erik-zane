@@ -5,7 +5,10 @@ Starting with Project 03, you will need to assign the responsibility of certain 
 You are encouraged to support each other with an overall goal of successfully completing the project.  If one person struggles with their responsibility, the other member is encouraged to step in.  However, an agreement should be struck between the partners wherein one partner gives up some of the assigned points for that function relative to the amount of help received.  
 
 You will submit this form at least twice.  Once before the project starts.  This is to document your intention.  Then, again at completion.  This is to document any deviation from the initial plan.  
-                                                                                        Zane        Erik
+
+Partner 1: Zane
+Partner 2: Erik
+
 | Workload                                                          | Total Points  | Partner 1 | Partner 2 |
 |-------------------------------------------------------------------|---------------|-----------|-----------|
 |Introduction                                                       | 1             |     1     |           |
