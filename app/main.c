@@ -41,10 +41,11 @@ int main(void)
     set_timer(); 
 
     __enable_interrupt(); 
+    int unlock = 0;
 
     while(true)
     {
-        int unlock = 0;
+        unlock = 0;
         update_color(LOCKED);
         while (unlock == 0) {
             unlock = waitForUnlock(); // stays here until complete passkey has been entered 
@@ -57,11 +58,19 @@ int main(void)
         }
         char chosenPattern = lastInput;
         int rows;
+        int phase;
         // likely enable LCD-pattern-trigger timer interrupt here
         while (lastInput != 'D') {
             if (chosenPattern == '1') {
-                Pattern1(1); // set default (initial) light pattern for pattern 1
+                phase = 0;
+                Pattern1(phase); // set default (initial) light pattern for pattern 1
                 while (chosenPattern == '1') { 
+                    if (phase < 1) {
+                        phase ++;
+                    }
+                    else {
+                        phase = 0;
+                    }
                     rows = P3IN; // constantly listen for an input
                     rows &= 0b11110000; // clear any values on lower 4 bits
                     if (rows != 0b00000000) {
@@ -83,13 +92,20 @@ int main(void)
                         }
                     }
                     // wait for interval to end (likely use timer ISR to set variable), however, trial-error while-loops also likely work
-                    Pattern1(0);
+                    Pattern1(phase);
                 }
             }     
                 
             else if (chosenPattern == '2') {
-                Pattern2(1); // set default (initial) light pattern for pattern 2
+                phase = 0;
+                Pattern2(phase); // set default (initial) light pattern for pattern 2
                 while (chosenPattern == '2') { 
+                    if (phase < 5) {
+                        phase ++;
+                    }
+                    else {
+                        phase = 0;
+                    }
                     rows = P3IN; // constantly listen for an input
                     rows &= 0b11110000; // clear any values on lower 4 bits
                     if (rows != 0b00000000) {
@@ -111,13 +127,20 @@ int main(void)
                         }
                     }
                     // wait for interval to end (likely use timer ISR to set variable), however, trial-error while-loops also likely work
-                    Pattern2(0);
+                    Pattern2(phase);
                 }
 
             }
             else if (chosenPattern == '3') {
-                Pattern3(1); // set default (initial) light pattern for pattern 3
+                phase = 0;
+                Pattern3(phase); // set default (initial) light pattern for pattern 3
                 while (chosenPattern == 3) { 
+                    if (phase < 7) {
+                        phase ++;
+                    }
+                    else {
+                        phase = 0;
+                    }
                     rows = P3IN; // constantly listen for an input
                     rows &= 0b11110000; // clear any values on lower 4 bits
                     if (rows != 0b00000000) {
@@ -139,7 +162,7 @@ int main(void)
                         }
                     }
                     // wait for interval to end (likely use timer ISR to set variable), however, trial-error while-loops also likely work
-                    Pattern3(0);
+                    Pattern3(phase);
                 }
             }
         }
