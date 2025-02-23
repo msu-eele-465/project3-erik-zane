@@ -1,9 +1,10 @@
 #include <msp430.h>
 #include <stdbool.h>
 #include <string.h>
-#include "RGB.c"
-
-char readInput() {
+#include "shared.h"
+#include "RGB.h"
+#include "keypad.h"
+char readInput(void) {
     int rows = 0b00000000;
     int cols = 0b00000000;
     int row  = 0;
@@ -44,10 +45,10 @@ char readInput() {
     P3DIR &= ~0b11110000; // set all keypad rows to inputs pulled low
     P3OUT &= ~0b11110000; // pull down resistors
     PM5CTL0 &= ~LOCKLPM5;
-    switch (rows)
+    switch (row)
     {
         case 5: 
-            switch (cols)
+            switch (col)
                 {
                     case 1: 
                         pressed_character = 'D';
@@ -68,7 +69,7 @@ char readInput() {
                 }
             break;
         case 6: 
-            switch (cols)
+            switch (col)
                 {
                     case 1: 
                         pressed_character = 'C';
@@ -89,7 +90,7 @@ char readInput() {
                 }
             break;
         case 7: 
-            switch (cols)
+            switch (col)
                 {
                     case 1: 
                         pressed_character = 'B';
@@ -110,7 +111,7 @@ char readInput() {
                 }
             break;
         case 8: 
-            switch (cols)
+            switch (col)
                 {
                     case 1: 
                         pressed_character = 'A';
@@ -136,7 +137,7 @@ char readInput() {
     return pressed_character;
 }
 
-int passkey() {
+int passkey(void) {
     // should disable all functionality besides heartbeat ISR and status LED, which must turn yellow from red
     bool locked = true;
     char triedPin[5];
@@ -145,7 +146,7 @@ int passkey() {
         int i;
         for (i = 0; i < 4; i++) {
             triedPin[i] = readInput();
-            if (triedPin[i] = 'D') {
+            if (triedPin[i] == 'D') {
                 return 0; // this tells us to re-lock the system and stop listening for inputs
             }
         }
@@ -157,26 +158,30 @@ int passkey() {
     // enable functionality
     return 1; // unlock system, also return 1 from waitForUnlock() 
 }
-int waitForUnlock() {
+int waitForUnlock(void) {
     // should disable all functionality besides heartbeat ISR and status LED, which be red
+    int rows = 0b00000000;
     while (rows == 0b00000000) { // while waiting for one of P3.4-P3.7 to be pulled high
         rows = P3IN;
         rows &= 0b11110000; // clear any values on lower 4 bits
     }
     char is_unlock = readInput();
     if (is_unlock == 'D') {
-        update_color(UNLOCKING);
+        state = UNLOCKING;
+        update_color(state);
         int unlock = passkey();
         if (unlock == 1) {
             return 1; // enter LCD controller part of program
         }
         else {
-            update_color(LOCKED);
+            state = LOCKED;
+            update_color(state);
             return 0; // basically system remains locked, so return to the beginning of this method
         }
     }
     else {
-        update_color(LOCKED);
+        state = LOCKED;
+        update_color(state);
         return 0; // basically system remains locked, so return to the beginning of this method
     }
 

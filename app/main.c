@@ -1,23 +1,20 @@
 #include <msp430.h>
 #include <stdbool.h>
 #include <string.h>
-#include "LCD.c"
-#include "keyPad.c"
-#include "RGB.c"
+#include "LCD.h"
+#include "keypad.h"
+#include "RGB.h"
+#include "shared.h"
 
-#define RED_LED   BIT2 
-#define GREEN_LED BIT3 
-#define BLUE_LED  BIT4 
+//#define RED_LED   BIT2 
+//#define GREEN_LED BIT3 
+//#define BLUE_LED  BIT4 
 
 volatile unsigned int red_counter = 0;
 volatile unsigned int green_counter = 0;
 volatile unsigned int blue_counter = 0;
 
-typedef enum { LOCKED, UNLOCKING, UNLOCKED } system_states;
 volatile system_states state = LOCKED;
-
-void setup_timer(void);
-void update_color(system_states new_state);
 
 int main(void)
 {
@@ -26,12 +23,27 @@ int main(void)
     P3DIR |= 0b00001111;   // set keypad columns to outputs pulled high
     P3OUT |= 0b00001111;
 
+    P5DIR |= 0b00001111;   // 4 MSBs of LCD display
+    P5OUT &= ~0b00001111;
+    P6DIR |= 0b00001111;   // 4 LSBs of LCD display
+    P6OUT &= ~0b00001111;
+
+    P1DIR |= BIT0;                              // Sets P1.0 as an output
+    P1OUT &= ~BIT0;                             // Initializes LED to OFF
+
     P3DIR &= ~0b11110000; // set all keypad rows to inputs pulled low
     P3REN |= 0b11111111; // permanently set all of port 3 to have resistors
     P3OUT &= ~0b11110000; // pull down resistors
 
-    P1DIR |= RED_LED | GREEN_LED | BLUE_LED;
-    P1OUT |= RED_LED | GREEN_LED | BLUE_LED;  // Start with all OFF
+
+    P1DIR |= 0b00001110;
+    P1OUT |= 0b00001110;
+    //P1DIR |= RED_LED | GREEN_LED | BLUE_LED;
+    //P1OUT |= RED_LED | GREEN_LED | BLUE_LED;  // Start with all ON
+
+    TB1CCTL0 = CCIE;                            //CCIE enables Timer B0 interrupt
+    TB1CCR0 = 32768;                            //sets Timer B0 to 1 second (32.768 kHz)
+    TB1CTL = TBSSEL_1 | ID_0 | MC__UP | TBCLR;    //ACLK, No divider, Up mode, Clear timer
     
     // Disable the GPIO power-on default high-impedance mode to activate
     // previously configure port settings
@@ -46,12 +58,14 @@ int main(void)
     while(true)
     {
         unlock = 0;
-        update_color(LOCKED);
+        state = LOCKED;
+        update_color(state);
         while (unlock == 0) {
             unlock = waitForUnlock(); // stays here until complete passkey has been entered 
         }
         // turn status LED Blue here
-        update_color(UNLOCKED);
+        state = UNLOCKED;
+        update_color(state);
         char lastInput = '0';
         while (lastInput != '1' && lastInput != '2' && lastInput != '3' && lastInput != 'D') {
             lastInput = readInput(); // stays here until user chooses a pattern, or chooses to lock the system
@@ -166,7 +180,8 @@ int main(void)
                 }
             }
         }
-        // turn LCD off completely
+        P5OUT &= ~0b00001111;
+        P6OUT &= ~0b00001111; // turn LCD off completely
         // likely disable LCD-pattern-trigger timer interrupt here (system returns to locked state)
     }
 }
@@ -175,23 +190,38 @@ int main(void)
 __interrupt void TimerB0_ISR(void) {
     static unsigned int pwms = 0;
 
-    pwms = (pwms + 1) % 256;
+    pwms = (pwms + 1) % 255;
 
     // Red LED
-    if (pwms == red_counter)
-        P1OUT &= ~RED_LED;
-    if (pwms == 0)
-        P1OUT |= RED_LED;
+    if (pwms == red_counter){
+        P1OUT &= ~0b00000010;
+    }
+    if (pwms == 0) {
+        P1OUT |= 0b00000010;
+    }
 
     // Green LED
-    if (pwms == green_counter)
-        P1OUT &= ~GREEN_LED;
-    if (pwms == 0)
-        P1OUT |= GREEN_LED;
+    if (pwms == green_counter) {
+        P1OUT &= ~0b00000100;
+    }
+    if (pwms == 0) {
+        P1OUT |= 0b00000100;
+    }
 
     // Blue LED
-    if (pwms == blue_counter)
-        P1OUT &= ~BLUE_LED;
-    if (pwms == 0)
-        P1OUT |= BLUE_LED;
+    if (pwms == blue_counter) {
+        P1OUT &= ~0b00001000;
+    }
+    if (pwms == 0) {
+        P1OUT |= 0b00001000;
+    }
+    TB0CCTL0 &= ~CCIFG;
+
 }
+
+#pragma vector = TIMER1_B0_VECTOR               //time B0 ISR
+__interrupt void TIMERB1_ISR(void) {
+    P1OUT ^= BIT0;                              //toggles P1.0 LED
+    TB1CCTL0 &= ~CCIFG;
+}
+//todo: setup LCD timing (ISR)

@@ -1,4 +1,8 @@
-
+#include <msp430.h>
+#include <stdbool.h>
+#include <string.h>
+#include "shared.h"
+#include "RGB.h"
 
 void set_timer(void) {
     TB0CTL = TBSSEL__SMCLK | MC__UP | TBCLR; 
@@ -7,8 +11,8 @@ void set_timer(void) {
 }
 
 
-void update_color(system_states new_state) {
-    state = new_state;
+void update_color(system_states new_state) { // system_states new_state) {
+   system_states state = new_state;
 
     switch (state) {
         case LOCKED:  // Red (#c43e1d)
