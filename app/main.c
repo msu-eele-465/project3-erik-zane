@@ -122,7 +122,7 @@ int main(void)
                 phase = 0;
                 Pattern2(phase); // set default (initial) light pattern for pattern 2
                 while (chosenPattern == '2') { 
-                    if (phase < 127) {
+                    if (phase < 255) {
                         phase ++;
                     }
                     else {
@@ -163,7 +163,7 @@ int main(void)
                 phase = 0;
                 Pattern3(phase); // set default (initial) light pattern for pattern 3
                 while (chosenPattern == 3) { 
-                    if (phase < 7) {
+                    if (phase < 5) {
                         phase ++;
                     }
                     else {
