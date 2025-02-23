@@ -14,6 +14,7 @@ volatile unsigned int red_counter = 0;
 volatile unsigned int green_counter = 0;
 volatile unsigned int blue_counter = 0;
 volatile unsigned int pwms = 0;
+volatile unsigned int next_pattern = 0;
 
 volatile system_states state = LOCKED;
 
@@ -29,6 +30,7 @@ int main(void)
     P6DIR |= 0b00001111;   // 4 LSBs of LCD display
     P6OUT &= ~0b00001111;
 
+    //heartbeat LED
     P1DIR |= BIT0;                              // Sets P1.0 as an output
     P1OUT &= ~BIT0;                             // Initializes LED to OFF
 
@@ -36,16 +38,15 @@ int main(void)
     P3REN |= 0b11111111; // permanently set all of port 3 to have resistors
     P3OUT &= ~0b11110000; // pull down resistors
 
-
-    //P1DIR |= 0b00001110;
-    //P1OUT |= 0b00001110;
     P1DIR |= RED_LED | GREEN_LED | BLUE_LED;
     P1OUT |= RED_LED | GREEN_LED | BLUE_LED;  // Start with all ON
 
+    //heartbeat interrupt
     TB1CCTL0 = CCIE;                            //CCIE enables Timer B0 interrupt
     TB1CCR0 = 32768;                            //sets Timer B0 to 1 second (32.768 kHz)
     TB1CTL = TBSSEL_1 | ID_0 | MC__UP | TBCLR;    //ACLK, No divider, Up mode, Clear timer
-    
+
+
     // Disable the GPIO power-on default high-impedance mode to activate
     // previously configure port settings
 
@@ -74,7 +75,7 @@ int main(void)
         char chosenPattern = lastInput;
         int rows;
         int phase;
-        // likely enable LCD-pattern-trigger timer interrupt here
+        set_LCD_Timer(); // enable LCD-pattern-trigger timer interrupt here
         while (lastInput != 'D') {
             if (chosenPattern == '1') {
                 phase = 0;
@@ -93,13 +94,16 @@ int main(void)
                         if (lastInput == 'D') {
                             chosenPattern = 'D'; // locks device
                         }
-                        else if (lastInput == 'A') {
+                        else if (lastInput == 'A' && TB2CCR0 > 7000) {
                             // if possible, subtract .25 seconds from interval
+                            TB2CCR0 = TB2CCR0 - 6250;
                         }
                         else if (lastInput == 'B') {
                             // add .25 seconds to interval
+                            TB2CCR0 = TB2CCR0 + 6250;
+
                         }
-                        else if (lastInput == '2' || lastInput == '3') {
+                        else if (lastInput == '1' || lastInput == '2') {
                             chosenPattern = lastInput;
                         }
                         else {
@@ -107,7 +111,10 @@ int main(void)
                         }
                     }
                     // wait for interval to end (likely use timer ISR to set variable), however, trial-error while-loops also likely work
-                    Pattern1(phase);
+                    if (next_pattern == 1) {
+                        Pattern1(phase);
+                        next_pattern = 0;
+                    }
                 }
             }     
                 
@@ -115,7 +122,7 @@ int main(void)
                 phase = 0;
                 Pattern2(phase); // set default (initial) light pattern for pattern 2
                 while (chosenPattern == '2') { 
-                    if (phase < 5) {
+                    if (phase < 127) {
                         phase ++;
                     }
                     else {
@@ -128,13 +135,16 @@ int main(void)
                         if (lastInput == 'D') {
                             chosenPattern = 'D'; // locks device
                         }
-                        else if (lastInput == 'A') {
+                        else if (lastInput == 'A' && TB2CCR0 > 7000) {
                             // if possible, subtract .25 seconds from interval
+                            TB2CCR0 = TB2CCR0 - 6250;
                         }
                         else if (lastInput == 'B') {
                             // add .25 seconds to interval
+                            TB2CCR0 = TB2CCR0 + 6250;
+
                         }
-                        else if (lastInput == '1' || lastInput == '3') {
+                        else if (lastInput == '1' || lastInput == '2') {
                             chosenPattern = lastInput;
                         }
                         else {
@@ -142,7 +152,10 @@ int main(void)
                         }
                     }
                     // wait for interval to end (likely use timer ISR to set variable), however, trial-error while-loops also likely work
-                    Pattern2(phase);
+                    if (next_pattern == 1) {
+                        Pattern2(phase);
+                        next_pattern = 0;
+                    }
                 }
 
             }
@@ -163,11 +176,14 @@ int main(void)
                         if (lastInput == 'D') {
                             chosenPattern = 'D'; // locks device
                         }
-                        else if (lastInput == 'A') {
+                        else if (lastInput == 'A' && TB2CCR0 > 7000) {
                             // if possible, subtract .25 seconds from interval
+                            TB2CCR0 = TB2CCR0 - 6250;
                         }
                         else if (lastInput == 'B') {
                             // add .25 seconds to interval
+                            TB2CCR0 = TB2CCR0 + 6250;
+
                         }
                         else if (lastInput == '1' || lastInput == '2') {
                             chosenPattern = lastInput;
@@ -177,13 +193,20 @@ int main(void)
                         }
                     }
                     // wait for interval to end (likely use timer ISR to set variable), however, trial-error while-loops also likely work
-                    Pattern3(phase);
+                    if (next_pattern == 1) {
+                        Pattern3(phase);
+                        next_pattern = 0;
+                    }
                 }
+            }
+            else {
+                lastInput = readInput();
+                chosenPattern = lastInput;
             }
         }
         P5OUT &= ~0b00001111;
         P6OUT &= ~0b00001111; // turn LCD off completely
-        // likely disable LCD-pattern-trigger timer interrupt here (system returns to locked state)
+        pause_LCD_Timer(); // disable LCD-pattern-trigger timer interrupt here (system returns to locked state)
     }
 }
 
@@ -225,3 +248,8 @@ __interrupt void TIMERB1_ISR(void) {
     TB1CCTL0 &= ~CCIFG;
 }
 //todo: setup LCD timing (ISR)
+#pragma vector = TIMER2_B0_VECTOR
+__interrupt void TIMERB2_ISR(void) {
+    next_pattern = 1;
+    TB2CCTL0 &= ~CCIFG;
+} 
