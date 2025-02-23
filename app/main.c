@@ -1,95 +1,32 @@
 #include <msp430.h>
-#include <stdbool.h>
 
-#define RED_LED   BIT2 
-#define GREEN_LED BIT3 
-#define BLUE_LED  BIT4 
-
-volatile unsigned int red_counter = 0;
-volatile unsigned int green_counter = 0;
-volatile unsigned int blue_counter = 0;
-
-typedef enum { LOCKED, UNLOCKING, UNLOCKED } system_states;
-volatile system_states state = LOCKED;
-
-void setup_timer(void);
-void update_color(system_states new_state);
+void timerB0_init(void);
 
 int main(void) {
-    WDTCTL = WDTPW | WDTHOLD;  
+    WDTCTL = WDTPW | WDTHOLD;                   //stops watchdog timer
 
-    P1DIR |= RED_LED | GREEN_LED | BLUE_LED;
-    P1OUT &= ~(RED_LED | GREEN_LED | BLUE_LED);  // Start with all OFF
 
-    PM5CTL0 &= ~LOCKLPM5;
+    P1DIR |= BIT0;                              //sets P1.0 as an output
+    P1OUT &= ~BIT0;                             //initializes LED to OFF
 
-    set_timer(); 
+    PM5CTL0 &= ~LOCKLPM5;                       //unlocks GPIO
 
-    __enable_interrupt(); 
+    timerB0_init();                             //initializes B timer
+
+    __bis_SR_register(LPM3_bits | GIE);         // LPM3 for ACLK usage, GIE enables interrupts, enter low power mode
 
     while (1) {
-        __delay_cycles(5000000);
-        update_color(UNLOCKING);
-        __delay_cycles(5000000);
-        update_color(UNLOCKED);
-        __delay_cycles(5000000);
-        update_color(LOCKED);
+                                                //main loop empty, ISR handles LED changeing
     }
 }
 
-
-void set_timer(void) {
-    TB0CTL = TBSSEL__SMCLK | MC__UP | TBCLR; 
-    TB0CCR0 = 3750; 
-    TB0CCTL0 |= CCIE; 
+void timerB0_init(void) {
+    TB0CCTL0 = CCIE;                            //CCIE enables Timer B0 interrupt
+    TB0CCR0 = 32768;                            //sets Timer B0 to 1 second (32.768 kHz)
+    TB0CTL = TBSSEL_1 | ID_0 | MC_1 | TBCLR;    //ACLK, No divider, Up mode, Clear timer
 }
 
-
-void update_color(system_states new_state) {
-    state = new_state;
-
-    switch (state) {
-        case LOCKED:  // Red (#c43e1d)
-            red_counter = 200;
-            green_counter = 62;
-            blue_counter = 29;
-            break;
-
-        case UNLOCKING:  // Yellow (#c4921d)
-            red_counter = 200;
-            green_counter = 146;
-            blue_counter = 29;
-            break;
-
-        case UNLOCKED:  // Blue (#1da2c4)
-            red_counter = 29;
-            green_counter = 162;
-            blue_counter = 196;
-            break;
-    }
-}
-
-#pragma vector = TIMER0_B0_VECTOR
-__interrupt void TimerB0_ISR(void) {
-    static unsigned int pwms = 0;
-
-    pwms = (pwms + 1) % 256;
-
-    // Red LED
-    if (pwms < red_counter)
-        P1OUT |= RED_LED;
-    else
-        P1OUT &= ~RED_LED;
-
-    // Green LED
-    if (pwms < green_counter)
-        P1OUT |= GREEN_LED;
-    else
-        P1OUT &= ~GREEN_LED;
-
-    // Blue LED
-    if (pwms < blue_counter)
-        P1OUT |= BLUE_LED;
-    else
-        P1OUT &= ~BLUE_LED;
+#pragma vector = TIMER0_B0_VECTOR               //time B0 ISR
+__interrupt void TIMERB0_ISR(void) {
+    P1OUT ^= BIT0;                              //toggles P1.0 LED
 }
