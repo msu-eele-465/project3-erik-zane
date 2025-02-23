@@ -16,21 +16,21 @@ void update_color(system_states new_state) { // system_states new_state) {
 
     switch (state) {
         case LOCKED:  // Red (#c43e1d)
-            red_counter = 200;
-            green_counter = 62;
-            blue_counter = 29;
+            red_counter = 210; // baseline 196
+            green_counter = 15; // baseline 62
+            blue_counter = 3; // baseline 29
             break;
 
         case UNLOCKING:  // Yellow (#c4921d)
-            red_counter = 200;
-            green_counter = 146;
-            blue_counter = 29;
+            red_counter = 170; // baseline 196
+            green_counter = 34; // baseline 146
+            blue_counter = 4; // baseline 29
             break;
 
         case UNLOCKED:  // Blue (#1da2c4)
-            red_counter = 29;
-            green_counter = 162;
-            blue_counter = 196;
+            red_counter = 29; // baseline 29
+            green_counter = 25; // baseline 162
+            blue_counter = 25; // baseline 196
             break;
     }
 }
