@@ -87,34 +87,34 @@ int main(void)
                     else {
                         phase = 0;
                     }
-                    rows = P3IN; // constantly listen for an input
-                    rows &= 0b11110000; // clear any values on lower 4 bits
-                    if (rows != 0b00000000) {
-                        lastInput = readInput();
-                        if (lastInput == 'D') {
-                            chosenPattern = 'D'; // locks device
-                        }
-                        else if (lastInput == 'A' && TB2CCR0 > 7000) {
-                            // if possible, subtract .25 seconds from interval
-                            TB2CCR0 = TB2CCR0 - 6250;
-                        }
-                        else if (lastInput == 'B') {
-                            // add .25 seconds to interval
-                            TB2CCR0 = TB2CCR0 + 6250;
+                    while (next_pattern == 0) {
+                        rows = P3IN; // constantly listen for an input
+                        rows &= 0b11110000; // clear any values on lower 4 bits
+                        if (rows != 0b00000000) {
+                            lastInput = readInput();
+                            if (lastInput == 'D') {
+                                chosenPattern = 'D'; // locks device
+                            }
+                            else if (lastInput == 'A' && TB2CCR0 > 7000) {
+                                // if possible, subtract .25 seconds from interval
+                                TB2CCR0 = TB2CCR0 - 6250;
+                            }
+                            else if (lastInput == 'B') {
+                                // add .25 seconds to interval
+                                TB2CCR0 = TB2CCR0 + 6250;
 
-                        }
-                        else if (lastInput == '1' || lastInput == '2') {
-                            chosenPattern = lastInput;
-                        }
-                        else {
-                            // useless input, so do nothing
+                            }
+                            else if (lastInput == '2' || lastInput == '3') {
+                                chosenPattern = lastInput;
+                            }
+                            else {
+                                // useless input, so do nothing
+                            }
                         }
                     }
                     // wait for interval to end (likely use timer ISR to set variable), however, trial-error while-loops also likely work
-                    if (next_pattern == 1) {
-                        Pattern1(phase);
-                        next_pattern = 0;
-                    }
+                    Pattern1(phase);
+                    next_pattern = 0;
                 }
             }     
                 
@@ -128,34 +128,34 @@ int main(void)
                     else {
                         phase = 0;
                     }
-                    rows = P3IN; // constantly listen for an input
-                    rows &= 0b11110000; // clear any values on lower 4 bits
-                    if (rows != 0b00000000) {
-                        lastInput = readInput();
-                        if (lastInput == 'D') {
-                            chosenPattern = 'D'; // locks device
-                        }
-                        else if (lastInput == 'A' && TB2CCR0 > 7000) {
-                            // if possible, subtract .25 seconds from interval
-                            TB2CCR0 = TB2CCR0 - 6250;
-                        }
-                        else if (lastInput == 'B') {
-                            // add .25 seconds to interval
-                            TB2CCR0 = TB2CCR0 + 6250;
+                    while (next_pattern == 0) {
+                        rows = P3IN; // constantly listen for an input
+                        rows &= 0b11110000; // clear any values on lower 4 bits
+                        if (rows != 0b00000000) {
+                            lastInput = readInput();
+                            if (lastInput == 'D') {
+                                chosenPattern = 'D'; // locks device
+                            }
+                            else if (lastInput == 'A' && TB2CCR0 > 7000) {
+                                // if possible, subtract .25 seconds from interval
+                                TB2CCR0 = TB2CCR0 - 6250;
+                            }
+                            else if (lastInput == 'B') {
+                                // add .25 seconds to interval
+                                TB2CCR0 = TB2CCR0 + 6250;
 
-                        }
-                        else if (lastInput == '1' || lastInput == '2') {
-                            chosenPattern = lastInput;
-                        }
-                        else {
-                            // useless input, so do nothing
+                            }
+                            else if (lastInput == '1' || lastInput == '3') {
+                                chosenPattern = lastInput;
+                            }
+                            else {
+                                // useless input, so do nothing
+                            }
                         }
                     }
                     // wait for interval to end (likely use timer ISR to set variable), however, trial-error while-loops also likely work
-                    if (next_pattern == 1) {
-                        Pattern2(phase);
-                        next_pattern = 0;
-                    }
+                    Pattern2(phase);
+                    next_pattern = 0;
                 }
 
             }
@@ -169,34 +169,34 @@ int main(void)
                     else {
                         phase = 0;
                     }
-                    rows = P3IN; // constantly listen for an input
-                    rows &= 0b11110000; // clear any values on lower 4 bits
-                    if (rows != 0b00000000) {
-                        lastInput = readInput();
-                        if (lastInput == 'D') {
-                            chosenPattern = 'D'; // locks device
-                        }
-                        else if (lastInput == 'A' && TB2CCR0 > 7000) {
-                            // if possible, subtract .25 seconds from interval
-                            TB2CCR0 = TB2CCR0 - 6250;
-                        }
-                        else if (lastInput == 'B') {
-                            // add .25 seconds to interval
-                            TB2CCR0 = TB2CCR0 + 6250;
+                    while (next_pattern == 0) {
+                        rows = P3IN; // constantly listen for an input
+                        rows &= 0b11110000; // clear any values on lower 4 bits
+                        if (rows != 0b00000000) {
+                            lastInput = readInput();
+                            if (lastInput == 'D') {
+                                chosenPattern = 'D'; // locks device
+                            }
+                            else if (lastInput == 'A' && TB2CCR0 > 7000) {
+                                // if possible, subtract .25 seconds from interval
+                                TB2CCR0 = TB2CCR0 - 6250;
+                            }
+                            else if (lastInput == 'B') {
+                                // add .25 seconds to interval
+                                TB2CCR0 = TB2CCR0 + 6250;
 
-                        }
-                        else if (lastInput == '1' || lastInput == '2') {
-                            chosenPattern = lastInput;
-                        }
-                        else {
-                            // useless input, so do nothing
+                            }
+                            else if (lastInput == '1' || lastInput == '2') {
+                                chosenPattern = lastInput;
+                            }
+                            else {
+                                // useless input, so do nothing
+                            }
                         }
                     }
                     // wait for interval to end (likely use timer ISR to set variable), however, trial-error while-loops also likely work
-                    if (next_pattern == 1) {
-                        Pattern3(phase);
-                        next_pattern = 0;
-                    }
+                    Pattern3(phase);
+                    next_pattern = 0;
                 }
             }
             else {
