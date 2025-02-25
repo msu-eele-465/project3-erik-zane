@@ -148,10 +148,10 @@ int passkey(void) {
         TB3CCTL0 |= CCIE; // remove these two lines (marked $)and un-comment #-marked lines if timer should start on first input $
         for (i = 0; i < 4; i++) {
             triedPin[i] = readInput();
-            /* if (i == 0) { // start timer #
-                TB3CCR0 = 35000; // slightly more than 5 seconds #
-                TB3CCTL0 |= CCIE;  #
-            } */ #
+            // if (i == 0) { // start timer #
+            //    TB3CCR0 = 35000; // slightly more than 5 seconds #
+            //    TB3CCTL0 |= CCIE; // #
+            //} // #
             if (triedPin[i] == 'D') {
                 limit_reached = 0;
                 TB3CCTL0 &= ~CCIE; // prevent interrput from triggering more
@@ -162,7 +162,7 @@ int passkey(void) {
                 i = 0;
                 limit_reached = 0;
                 //TB3CCTL0 &= ~CCIE; // prevent interrput from triggering more  #
-                // TB3CCR0 = 1; // 1 for now to ensure that timer virtually starts at 0, 35000  is slightly more than 5 seconds  #
+                //TB3CCR0 = 1; // 1 for now to ensure that timer virtually starts at 0, 35000  is slightly more than 5 seconds  #
             }
         }
         triedPin[4] = '\0';

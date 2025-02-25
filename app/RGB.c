@@ -17,9 +17,9 @@ void update_color(system_states new_state) { // system_states new_state) {
 
     switch (state) {
         case LOCKED:  // Red (#c43e1d)
-            red_counter = 210; // baseline 196
-            green_counter = 15; // baseline 62/5
-            blue_counter = 3; // baseline 29/10
+            red_counter = 220; // baseline 196
+            green_counter = 12; // baseline 62/5
+            blue_counter = 1; // baseline 29/10
             break;
 
         case UNLOCKING:  // Yellow (#c4921d)
