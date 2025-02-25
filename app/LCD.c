@@ -48,6 +48,57 @@ void Pattern4(int phase) {
     return;
 }
 
+void Pattern5(int phase) {
+    const uint8_t pattern[8] = {
+        0b00000001,  //pattern 5 step 0
+        0b00000010,  //pattern 5 step 1
+        0b00000100,  //pattern 5 step 2
+        0b00001000,  //pattern 5 step 3
+        0b00010000,  //pattern 5 step 4
+        0b00100000,  //pattern 5 step 5
+        0b01000000,  //pattern 5 step 6
+        0b10000000   //pattern 5 step 7
+    };
+
+    P5OUT = (P5OUT & ~0x0F) | (pattern[phase] >> 4);    //upper 4 bits for given phase
+    P6OUT = (P6OUT & ~0x0F) | (pattern[phase] & 0x0F);  //lower 4 bits for given phase
+    return;
+}
+
+void Pattern6(int phase) {
+    const uint8_t pattern[8] = {
+        0b01111111,  //pattern 6 step 0
+        0b10111111,  //pattern 6 step 1
+        0b11011111,  //pattern 6 step 2
+        0b11101111,  //pattern 6 step 3
+        0b11110111,  //pattern 6 step 4
+        0b11111011,  //pattern 6 step 5
+        0b11111101,  //pattern 6 step 6
+        0b11111110   //pattern 6 step 7
+    };
+
+    P5OUT = (P5OUT & ~0x0F) | (pattern[phase] >> 4);    //upper 4 bits for given phase
+    P6OUT = (P6OUT & ~0x0F) | (pattern[phase] & 0x0F);  //lower 4 bits for given phase
+    return;
+}
+
+void Pattern7(int phase) {
+    const uint8_t pattern[8] = {
+        0b00000001,  //pattern 7 step 0
+        0b00000011,  //pattern 7 step 1
+        0b00000111,  //pattern 7 step 2
+        0b00001111,  //pattern 7 step 3
+        0b00011111,  //pattern 7 step 4
+        0b00111111,  //pattern 7 step 5
+        0b01111111,  //pattern 7 step 6
+        0b11111111   //pattern 7 step 7
+    };
+
+    P5OUT = (P5OUT & ~0x0F) | (pattern[phase] >> 4);    //upper 4 bits for given phase
+    P6OUT = (P6OUT & ~0x0F) | (pattern[phase] & 0x0F);  //lower 4 bits for given phase
+    return;
+}
+
 void set_LCD_Timer(void) {
     TB2CTL = TBSSEL__SMCLK | ID_3 | MC__UP | TBCLR;
     TB2EX0 |= TBIDEX_4;

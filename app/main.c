@@ -72,7 +72,7 @@ int main(void)
         state = UNLOCKED;
         update_color(state);
         char lastInput = 'X';
-        while (lastInput != '0' && lastInput != '1' && lastInput != '2' && lastInput != '3' && lastInput != '4' && lastInput != 'D') {
+        while (lastInput != '0' && lastInput != '1' && lastInput != '2' && lastInput != '3' && lastInput != '4' && lastInput != '5' && lastInput != '6' && lastInput != '7' && lastInput != 'D') {
             lastInput = readInput(); // stays here until user chooses a pattern, or chooses to lock the system
         }
         char chosenPattern = lastInput;
@@ -107,7 +107,7 @@ int main(void)
                                 TB2CCR0 = TB2CCR0 + 6250;
 
                             }
-                            else if (lastInput == '0' || lastInput == '2' || lastInput == '3' || lastInput == '4') {
+                            else if (lastInput == '0' || lastInput == '2' || lastInput == '3' || lastInput == '4' || lastInput == '5' || lastInput == '6' || lastInput == '7') {
                                 chosenPattern = lastInput;
                             }
                             else {
@@ -148,7 +148,7 @@ int main(void)
                                 TB2CCR0 = TB2CCR0 + 6250;
 
                             }
-                            else if (lastInput == '0' || lastInput == '1' || lastInput == '3' || lastInput == '4') {
+                            else if (lastInput == '0' || lastInput == '1' || lastInput == '3' || lastInput == '4' || lastInput == '5' || lastInput == '6' || lastInput == '7') {
                                 chosenPattern = lastInput;
                             }
                             else {
@@ -189,7 +189,7 @@ int main(void)
                                 TB2CCR0 = TB2CCR0 + 6250;
 
                             }
-                            else if (lastInput == '0' || lastInput == '1' || lastInput == '2' || lastInput == '4') {
+                            else if (lastInput == '0' || lastInput == '1' || lastInput == '2' || lastInput == '4' || lastInput == '5' || lastInput == '6' || lastInput == '7') {
                                 chosenPattern = lastInput;
                             }
                             else {
@@ -218,7 +218,7 @@ int main(void)
                         if (lastInput == 'D') {
                             chosenPattern = 'D'; // lock device
                         } 
-                        else if (lastInput == '1' || lastInput == '2' || lastInput == '3' || lastInput == '4') {
+                        else if (lastInput == '1' || lastInput == '2' || lastInput == '3' || lastInput == '4' || lastInput == '5' || lastInput == '6' || lastInput == '7') {
                             chosenPattern = lastInput;
                         }
                         else {
@@ -251,7 +251,7 @@ int main(void)
                             else if (lastInput == 'B') {
                                 TB2CCR0 += 6250;
                             }
-                            else if (lastInput == '0' || lastInput == '1' || lastInput == '2' || lastInput == '3') {
+                            else if (lastInput == '0' || lastInput == '1' || lastInput == '2' || lastInput == '3' || lastInput == '5' || lastInput == '6' || lastInput == '7') {
                                 chosenPattern = lastInput;
                             }
                             else {
@@ -264,6 +264,128 @@ int main(void)
                 }
             }
 
+            else if (chosenPattern == '5') {
+                phase = 0;
+                Pattern5(phase); // set default (initial) light pattern for pattern 3
+                while (chosenPattern == '5') { 
+                    if (phase < 7) {
+                        phase ++;
+                    }
+                    else {
+                        phase = 0;
+                    }
+                    while (next_pattern == 0) {
+                        rows = P3IN; // constantly listen for an input
+                        rows &= 0b11110000; // clear any values on lower 4 bits
+                        if (rows != 0b00000000) {
+                            lastInput = readInput();
+                            if (lastInput == 'D') {
+                                chosenPattern = 'D'; // locks device
+                            }
+                            else if (lastInput == 'A' && TB2CCR0 > 7000) {
+                                // if possible, subtract .25 seconds from interval
+                                TB2CCR0 = TB2CCR0 - 6250;
+                            }
+                            else if (lastInput == 'B') {
+                                // add .25 seconds to interval
+                                TB2CCR0 = TB2CCR0 + 6250;
+
+                            }
+                            else if (lastInput == '0' || lastInput == '1' || lastInput == '2' || lastInput == '3' || lastInput == '4' || lastInput == '6' || lastInput == '7') {
+                                chosenPattern = lastInput;
+                            }
+                            else {
+                                // useless input, so do nothing
+                            }
+                        }
+                    }
+                    // wait for interval to end (likely use timer ISR to set variable), however, trial-error while-loops also likely work
+                    Pattern5(phase);
+                    next_pattern = 0;
+                }
+            }
+
+            else if (chosenPattern == '6') {
+                phase = 0;
+                Pattern6(phase); // set default (initial) light pattern for pattern 3
+                while (chosenPattern == '6') { 
+                    if (phase < 7) {
+                        phase ++;
+                    }
+                    else {
+                        phase = 0;
+                    }
+                    while (next_pattern == 0) {
+                        rows = P3IN; // constantly listen for an input
+                        rows &= 0b11110000; // clear any values on lower 4 bits
+                        if (rows != 0b00000000) {
+                            lastInput = readInput();
+                            if (lastInput == 'D') {
+                                chosenPattern = 'D'; // locks device
+                            }
+                            else if (lastInput == 'A' && TB2CCR0 > 7000) {
+                                // if possible, subtract .25 seconds from interval
+                                TB2CCR0 = TB2CCR0 - 6250;
+                            }
+                            else if (lastInput == 'B') {
+                                // add .25 seconds to interval
+                                TB2CCR0 = TB2CCR0 + 6250;
+
+                            }
+                            else if (lastInput == '0' || lastInput == '1' || lastInput == '2' || lastInput == '3' || lastInput == '4' || lastInput == '5' || lastInput == '7') {
+                                chosenPattern = lastInput;
+                            }
+                            else {
+                                // useless input, so do nothing
+                            }
+                        }
+                    }
+                    // wait for interval to end (likely use timer ISR to set variable), however, trial-error while-loops also likely work
+                    Pattern6(phase);
+                    next_pattern = 0;
+                }
+            }
+
+            else if (chosenPattern == '7') {
+                phase = 0;
+                Pattern7(phase); // set default (initial) light pattern for pattern 3
+                while (chosenPattern == '7') { 
+                    if (phase < 7) {
+                        phase ++;
+                    }
+                    else {
+                        phase = 0;
+                    }
+                    while (next_pattern == 0) {
+                        rows = P3IN; // constantly listen for an input
+                        rows &= 0b11110000; // clear any values on lower 4 bits
+                        if (rows != 0b00000000) {
+                            lastInput = readInput();
+                            if (lastInput == 'D') {
+                                chosenPattern = 'D'; // locks device
+                            }
+                            else if (lastInput == 'A' && TB2CCR0 > 7000) {
+                                // if possible, subtract .25 seconds from interval
+                                TB2CCR0 = TB2CCR0 - 6250;
+                            }
+                            else if (lastInput == 'B') {
+                                // add .25 seconds to interval
+                                TB2CCR0 = TB2CCR0 + 6250;
+
+                            }
+                            else if (lastInput == '0' || lastInput == '1' || lastInput == '2' || lastInput == '3' || lastInput == '4' || lastInput == '5' || lastInput == '6') {
+                                chosenPattern = lastInput;
+                            }
+                            else {
+                                // useless input, so do nothing
+                            }
+                        }
+                    }
+                    // wait for interval to end (likely use timer ISR to set variable), however, trial-error while-loops also likely work
+                    Pattern7(phase);
+                    next_pattern = 0;
+                }
+            }
 
             else {
                 lastInput = readInput();
