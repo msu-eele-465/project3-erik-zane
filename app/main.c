@@ -112,6 +112,9 @@ int main(void)
                             else if (lastInput == '0' || lastInput == '2' || lastInput == '3') {
                                 chosenPattern = lastInput;
                             }
+                            else if (lastInput == '1') {
+                                phase1 = 0;
+                            }
                             else {
                                 // useless input, so do nothing
                             }
@@ -154,6 +157,9 @@ int main(void)
                             else if (lastInput == '0' || lastInput == '1' || lastInput == '3') {
                                 chosenPattern = lastInput;
                             }
+                            else if (lastInput == '2') {
+                                phase2 = 0;
+                            }
                             else {
                                 // useless input, so do nothing
                             }
@@ -195,6 +201,9 @@ int main(void)
                             }
                             else if (lastInput == '0' || lastInput == '1' || lastInput == '2') {
                                 chosenPattern = lastInput;
+                            }
+                            else if (lastInput == '3') {
+                                phase3 = 0;
                             }
                             else {
                                 // useless input, so do nothing
