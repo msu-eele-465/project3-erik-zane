@@ -144,10 +144,25 @@ int passkey(void) {
     char correctPin[5] = {'5', '4', '3', '1', '\0'};
     while (locked) {
         int i;
+        TB3CCR0 = 35000; // slightly more than 5 seconds $
+        TB3CCTL0 |= CCIE; // remove these two lines (marked $)and un-comment #-marked lines if timer should start on first input $
         for (i = 0; i < 4; i++) {
             triedPin[i] = readInput();
+            /* if (i == 0) { // start timer #
+                TB3CCR0 = 35000; // slightly more than 5 seconds #
+                TB3CCTL0 |= CCIE;  #
+            } */ #
             if (triedPin[i] == 'D') {
+                limit_reached = 0;
+                TB3CCTL0 &= ~CCIE; // prevent interrput from triggering more
+                TB3CCR0 = 1; // 1 for now to ensure that timer virtually starts at 0, 35000  is slightly more than 5 seconds
                 return 0; // this tells us to re-lock the system and stop listening for inputs
+            }
+            if (limit_reached == 1) {
+                i = 0;
+                limit_reached = 0;
+                //TB3CCTL0 &= ~CCIE; // prevent interrput from triggering more  #
+                // TB3CCR0 = 1; // 1 for now to ensure that timer virtually starts at 0, 35000  is slightly more than 5 seconds  #
             }
         }
         triedPin[4] = '\0';
@@ -155,6 +170,9 @@ int passkey(void) {
             locked = false; // if password is correct, leave loop
         }
     }
+    limit_reached = 0;
+    TB3CCTL0 &= ~CCIE; // prevent interrput from triggering more
+    TB3CCR0 = 1; // 1 for now to ensure that timer virtually starts at 0, 35000  is slightly more than 5 seconds
     // enable functionality
     return 1; // unlock system, also return 1 from waitForUnlock() 
 }
