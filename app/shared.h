@@ -1,0 +1,12 @@
+#ifndef SHARED_H
+#define SHARED_H
+
+typedef enum { LOCKED, UNLOCKING, UNLOCKED } system_states;
+
+extern volatile unsigned int red_counter;
+extern volatile unsigned int green_counter;
+extern volatile unsigned int blue_counter;
+
+extern volatile system_states state;
+
+#endif // SHARED_H
