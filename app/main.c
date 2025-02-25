@@ -72,7 +72,7 @@ int main(void)
         state = UNLOCKED;
         update_color(state);
         char lastInput = 'X';
-        while (lastInput != '0' && lastInput != '1' && lastInput != '2' && lastInput != '3' && lastInput != 'D') {
+        while (lastInput != '0' && lastInput != '1' && lastInput != '2' && lastInput != '3' && lastInput != '4' && lastInput != 'D') {
             lastInput = readInput(); // stays here until user chooses a pattern, or chooses to lock the system
         }
         char chosenPattern = lastInput;
@@ -107,7 +107,7 @@ int main(void)
                                 TB2CCR0 = TB2CCR0 + 6250;
 
                             }
-                            else if (lastInput == '0' || lastInput == '2' || lastInput == '3') {
+                            else if (lastInput == '0' || lastInput == '2' || lastInput == '3' || lastInput == '4') {
                                 chosenPattern = lastInput;
                             }
                             else {
@@ -148,7 +148,7 @@ int main(void)
                                 TB2CCR0 = TB2CCR0 + 6250;
 
                             }
-                            else if (lastInput == '0' || lastInput == '1' || lastInput == '3') {
+                            else if (lastInput == '0' || lastInput == '1' || lastInput == '3' || lastInput == '4') {
                                 chosenPattern = lastInput;
                             }
                             else {
@@ -189,7 +189,7 @@ int main(void)
                                 TB2CCR0 = TB2CCR0 + 6250;
 
                             }
-                            else if (lastInput == '0' || lastInput == '1' || lastInput == '2') {
+                            else if (lastInput == '0' || lastInput == '1' || lastInput == '2' || lastInput == '4') {
                                 chosenPattern = lastInput;
                             }
                             else {
@@ -218,15 +218,52 @@ int main(void)
                         if (lastInput == 'D') {
                             chosenPattern = 'D'; // lock device
                         } 
-                        else if (lastInput == '1' || lastInput == '2' || lastInput == '3') {
+                        else if (lastInput == '1' || lastInput == '2' || lastInput == '3' || lastInput == '4') {
                             chosenPattern = lastInput;
                         }
                         else {
-                            
+
                         }
                     }
                 }
             }
+
+            else if (chosenPattern == '4') {
+                phase = 0;
+                Pattern4(phase); // set default (initial) light pattern for pattern 4
+                while (chosenPattern == '4') { 
+                    if (phase < 255) {
+                        phase++;
+                    } else {
+                        phase = 0;
+                    }
+                    while (next_pattern == 0) {
+                        rows = P3IN; // constantly listen for an input
+                        rows &= 0b11110000; // clear any values on lower 4 bits
+                        if (rows != 0b00000000) {
+                            lastInput = readInput();
+                            if (lastInput == 'D') {
+                                chosenPattern = 'D'; // locks device
+                            } 
+                            else if (lastInput == 'A' && TB2CCR0 > 7000) {
+                                TB2CCR0 -= 6250;
+                            } 
+                            else if (lastInput == 'B') {
+                                TB2CCR0 += 6250;
+                            }
+                            else if (lastInput == '0' || lastInput == '1' || lastInput == '2' || lastInput == '3') {
+                                chosenPattern = lastInput;
+                            }
+                            else {
+
+                            }
+                        }
+                    }
+                    Pattern4(phase);
+                    next_pattern = 0;
+                }
+            }
+
 
             else {
                 lastInput = readInput();
