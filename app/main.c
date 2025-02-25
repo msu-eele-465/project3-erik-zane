@@ -79,7 +79,11 @@ int main(void)
         state = UNLOCKED;
         update_color(state);
         char lastInput = 'X';
+<<<<<<< HEAD
+        while (lastInput != '0' && lastInput != '1' && lastInput != '2' && lastInput != '3' && lastInput != 'D') {
+=======
         while (lastInput != '0' && lastInput != '1' && lastInput != '2' && lastInput != '3' && lastInput != '4' && lastInput != '5' && lastInput != '6' && lastInput != '7' && lastInput != 'D') {
+>>>>>>> LCD-patterns
             lastInput = readInput(); // stays here until user chooses a pattern, or chooses to lock the system
         }
         char chosenPattern = lastInput;
@@ -88,10 +92,13 @@ int main(void)
         int phase1 = 0;
         int phase2 = 0;
         int phase3 = 0;
+<<<<<<< HEAD
+=======
         int phase4 = 0;
         int phase5 = 0;
         int phase6 = 0;
         int phase7 = 0;
+>>>>>>> LCD-patterns
         set_LCD_Timer(); // enable LCD-pattern-trigger timer interrupt here
         while (lastInput != 'D') {
             if (chosenPattern == '1') {
@@ -120,7 +127,11 @@ int main(void)
                                 TB2CCR0 = TB2CCR0 + 6250;
 
                             }
+<<<<<<< HEAD
+                            else if (lastInput == '0' || lastInput == '2' || lastInput == '3') {
+=======
                             else if (lastInput == '0' || lastInput == '2' || lastInput == '3' || lastInput == '4' || lastInput == '5' || lastInput == '6' || lastInput == '7') {
+>>>>>>> LCD-patterns
                                 chosenPattern = lastInput;
                             }
                             else if (lastInput == '1') {
@@ -165,7 +176,11 @@ int main(void)
                                 TB2CCR0 = TB2CCR0 + 6250;
 
                             }
+<<<<<<< HEAD
+                            else if (lastInput == '0' || lastInput == '1' || lastInput == '3') {
+=======
                             else if (lastInput == '0' || lastInput == '1' || lastInput == '3' || lastInput == '4' || lastInput == '5' || lastInput == '6' || lastInput == '7') {
+>>>>>>> LCD-patterns
                                 chosenPattern = lastInput;
                             }
                             else if (lastInput == '2') {
@@ -210,7 +225,11 @@ int main(void)
                                 TB2CCR0 = TB2CCR0 + 6250;
 
                             }
+<<<<<<< HEAD
+                            else if (lastInput == '0' || lastInput == '1' || lastInput == '2') {
+=======
                             else if (lastInput == '0' || lastInput == '1' || lastInput == '2' || lastInput == '4' || lastInput == '5' || lastInput == '6' || lastInput == '7') {
+>>>>>>> LCD-patterns
                                 chosenPattern = lastInput;
                             }
                             else if (lastInput == '3') {
@@ -230,6 +249,10 @@ int main(void)
             }
 
             else if (chosenPattern == '0') {
+<<<<<<< HEAD
+                phase0 = 0;
+=======
+>>>>>>> LCD-patterns
                 Pattern0(phase0); // set default (initial) light pattern for pattern 0
                 while (chosenPattern == '0') { 
                     if (next_pattern) {
@@ -243,6 +266,13 @@ int main(void)
                         if (lastInput == 'D') {
                             chosenPattern = 'D'; // lock device
                         } 
+<<<<<<< HEAD
+                        else if (lastInput == '1' || lastInput == '2' || lastInput == '3') {
+                            chosenPattern = lastInput;
+                        }
+                        else {
+                            
+=======
                         else if (lastInput == '1' || lastInput == '2' || lastInput == '3' || lastInput == '4' || lastInput == '5' || lastInput == '6' || lastInput == '7') {
                             chosenPattern = lastInput;
                         }
@@ -251,11 +281,14 @@ int main(void)
                             }
                         else {
 
+>>>>>>> LCD-patterns
                         }
                     }
                 }
             }
 
+<<<<<<< HEAD
+=======
             else if (chosenPattern == '4') {
                 Pattern4(phase4); // set default (initial) light pattern for pattern 4
                 while (chosenPattern == '4') { 
@@ -431,6 +464,7 @@ int main(void)
                 }
             }
 
+>>>>>>> LCD-patterns
             else {
                 lastInput = readInput();
                 chosenPattern = lastInput;

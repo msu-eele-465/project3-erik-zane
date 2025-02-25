@@ -5,18 +5,31 @@
 
 void Pattern0(int phase) {
     (void)phase;
+<<<<<<< HEAD
+    P5OUT = (P5OUT & ~0x0F) | 0b0101; //sets upper 4 bits (P5.3 - P5.0) to 1010
+    P6OUT = (P6OUT & ~0x0F) | 0b0101; //sets lower 4 bits (P6.3 - P6.0) to 1010
+=======
     P5OUT = (P5OUT & ~0x0F) | 0b1010; //sets upper 4 bits (P5.3 - P5.0) to 1010
     P6OUT = (P6OUT & ~0x0F) | 0b1010; //sets lower 4 bits (P6.3 - P6.0) to 1010
+>>>>>>> LCD-patterns
     return;
 }
 
 void Pattern1(int phase) {
     if (phase == 0) { //checks if the phase is even or odd, below is even phase
+<<<<<<< HEAD
+        P5OUT = (P5OUT & ~0x0F) | 0b0101; //sets upper 4 bits (P5.3 - P5.0) to 1010
+        P6OUT = (P6OUT & ~0x0F) | 0b0101; //sets lower 4 bits (P6.3 - P6.0) to 1010
+    } else { //odd phase
+        P5OUT = (P5OUT & ~0x0F) | 0b1010; //sets upper 4 bits (P5.3 - P5.0) to 0101
+        P6OUT = (P6OUT & ~0x0F) | 0b1010; //sets lower 4 bits (P6.3 - P6.0) to 0101
+=======
         P5OUT = (P5OUT & ~0x0F) | 0b1010; //sets upper 4 bits (P5.3 - P5.0) to 1010
         P6OUT = (P6OUT & ~0x0F) | 0b1010; //sets lower 4 bits (P6.3 - P6.0) to 1010
     } else { //odd phase
         P5OUT = (P5OUT & ~0x0F) | 0b0101; //sets upper 4 bits (P5.3 - P5.0) to 0101
         P6OUT = (P6OUT & ~0x0F) | 0b0101; //sets lower 4 bits (P6.3 - P6.0) to 0101
+>>>>>>> LCD-patterns
     }
     return;
 }
@@ -37,6 +50,8 @@ void Pattern3(int phase) {
 
     P5OUT = (P5OUT & ~0x0F) | (pattern[phase] >> 4);    //upper 4 bits for given phase
     P6OUT = (P6OUT & ~0x0F) | (pattern[phase] & 0x0F);  //lower 4 bits for given phase
+<<<<<<< HEAD
+=======
     return;
 }
 
@@ -96,6 +111,7 @@ void Pattern7(int phase) {
 
     P5OUT = (P5OUT & ~0x0F) | (pattern[phase] >> 4);    //upper 4 bits for given phase
     P6OUT = (P6OUT & ~0x0F) | (pattern[phase] & 0x0F);  //lower 4 bits for given phase
+>>>>>>> LCD-patterns
     return;
 }
 
