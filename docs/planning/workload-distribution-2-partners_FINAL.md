@@ -16,7 +16,7 @@ Partner 1: Zane Partner2: Erik
 |System architecture diagram                                        | 1     |           |     1     |
 |Professional demo                                                  | 2     |     1     |     1     |
 |System starts in a locked state                                    | 0.5   |           |     0.5   |
-|Unlock code works and is 4-digits long                             | 4     |     2     |     2     |
+|Unlock code works and is 4-digits long                             | 4     |           |     4     |
 |LED is set to correct color when locked                            | 0.5   |     0.5   |           |
 |LED is set to correct color when being unlocked                    | 0.5   |     0.5   |           |
 |LED is set to correct color when unlocked                          | 0.5   |     0.5   |           |
@@ -26,9 +26,15 @@ Partner 1: Zane Partner2: Erik
 |When the selected pattern is the same, the pattern restarts        | 0.5   |     0.5   |           |
 |When a new pattern is selected, the pattern must start within 1 s  | 2     |           |     2     |
 |Previously selected pattern starts where it left off               | 0.5   |           |     0.5   |
-|LED pattern transition period is changeable                        | 2     |           |     2     |
+|Extra credit:Pressing D locks                                      | 1     |           |     1     |
+|Extra credit:5 seconds to unlock                                   | 2     |     0.5   |     1.5   |
+|LED pattern transition period is changeable                        | 2     |     1     |     1     |
 |LED pattern 0                                                      | 0.5   |     0.5   |           |
 |LED pattern 1                                                      | 0.5   |     0.5   |           |
 |LED pattern 2                                                      | 0.5   |     0.5   |           |
 |LED pattern 3                                                      | 0.5   |     0.5   |           |
-|                                                                   | 20    |     10    |     10    |
+|Extra credit: LED pattern 4                                        | 0.5   |     0.5   |           |
+|Extra credit: LED pattern 5                                        | 0.5   |     0.5   |           |
+|Extra credit: LED pattern 6                                        | 0.5   |     0.5   |           |
+|Extra credit: LED pattern 7                                        | 0.5   |     0.5   |           |
+|                                                                   |20 + 5 |     11.5  |     13.5  | 5 total extra credit
