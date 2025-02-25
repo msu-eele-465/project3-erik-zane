@@ -34,6 +34,9 @@ int main(void)
     P1DIR |= BIT0;                              // Sets P1.0 as an output
     P1OUT &= ~BIT0;                             // Initializes LED to OFF
 
+    P6DIR |= BIT6;                              // LED for debugging       
+    P6OUT &= ~BIT6;
+
     P3DIR &= ~0b11110000; // set all keypad rows to inputs pulled low
     P3REN |= 0b11111111; // permanently set all of port 3 to have resistors
     P3OUT &= ~0b11110000; // pull down resistors
@@ -68,24 +71,26 @@ int main(void)
         // turn status LED Blue here
         state = UNLOCKED;
         update_color(state);
-        char lastInput = '0';
-        while (lastInput != '1' && lastInput != '2' && lastInput != '3' && lastInput != 'D') {
+        char lastInput = 'X';
+        while (lastInput != '0' && lastInput != '1' && lastInput != '2' && lastInput != '3' && lastInput != 'D') {
             lastInput = readInput(); // stays here until user chooses a pattern, or chooses to lock the system
         }
         char chosenPattern = lastInput;
         int rows;
-        int phase;
+        int phase0 = 0;
+        int phase1 = 0;
+        int phase2 = 0;
+        int phase3 = 0;
         set_LCD_Timer(); // enable LCD-pattern-trigger timer interrupt here
         while (lastInput != 'D') {
             if (chosenPattern == '1') {
-                phase = 0;
-                Pattern1(phase); // set default (initial) light pattern for pattern 1
+                Pattern1(phase1); // set default (initial) light pattern for pattern 1
                 while (chosenPattern == '1') { 
-                    if (phase < 1) {
-                        phase ++;
+                    if (phase1 < 1) {
+                        phase1 ++;
                     }
                     else {
-                        phase = 0;
+                        phase1 = 0;
                     }
                     while (next_pattern == 0) {
                         rows = P3IN; // constantly listen for an input
@@ -104,7 +109,7 @@ int main(void)
                                 TB2CCR0 = TB2CCR0 + 6250;
 
                             }
-                            else if (lastInput == '2' || lastInput == '3') {
+                            else if (lastInput == '0' || lastInput == '2' || lastInput == '3') {
                                 chosenPattern = lastInput;
                             }
                             else {
@@ -113,20 +118,19 @@ int main(void)
                         }
                     }
                     // wait for interval to end (likely use timer ISR to set variable), however, trial-error while-loops also likely work
-                    Pattern1(phase);
+                    Pattern1(phase1);
                     next_pattern = 0;
                 }
             }     
                 
             else if (chosenPattern == '2') {
-                phase = 0;
-                Pattern2(phase); // set default (initial) light pattern for pattern 2
+                Pattern2(phase2); // set default (initial) light pattern for pattern 2
                 while (chosenPattern == '2') { 
-                    if (phase < 255) {
-                        phase ++;
+                    if (phase2 < 255) {
+                        phase2 ++;
                     }
                     else {
-                        phase = 0;
+                        phase2 = 0;
                     }
                     while (next_pattern == 0) {
                         rows = P3IN; // constantly listen for an input
@@ -145,7 +149,7 @@ int main(void)
                                 TB2CCR0 = TB2CCR0 + 6250;
 
                             }
-                            else if (lastInput == '1' || lastInput == '3') {
+                            else if (lastInput == '0' || lastInput == '1' || lastInput == '3') {
                                 chosenPattern = lastInput;
                             }
                             else {
@@ -154,20 +158,19 @@ int main(void)
                         }
                     }
                     // wait for interval to end (likely use timer ISR to set variable), however, trial-error while-loops also likely work
-                    Pattern2(phase);
+                    Pattern2(phase2);
                     next_pattern = 0;
                 }
 
             }
             else if (chosenPattern == '3') {
-                phase = 0;
-                Pattern3(phase); // set default (initial) light pattern for pattern 3
-                while (chosenPattern == 3) { 
-                    if (phase < 5) {
-                        phase ++;
+                Pattern3(phase3); // set default (initial) light pattern for pattern 3
+                while (chosenPattern == '3') { 
+                    if (phase3 < 5) {
+                        phase3 ++;
                     }
                     else {
-                        phase = 0;
+                        phase3 = 0;
                     }
                     while (next_pattern == 0) {
                         rows = P3IN; // constantly listen for an input
@@ -186,7 +189,7 @@ int main(void)
                                 TB2CCR0 = TB2CCR0 + 6250;
 
                             }
-                            else if (lastInput == '1' || lastInput == '2') {
+                            else if (lastInput == '0' || lastInput == '1' || lastInput == '2') {
                                 chosenPattern = lastInput;
                             }
                             else {
@@ -195,10 +198,36 @@ int main(void)
                         }
                     }
                     // wait for interval to end (likely use timer ISR to set variable), however, trial-error while-loops also likely work
-                    Pattern3(phase);
+                    Pattern3(phase3);
                     next_pattern = 0;
                 }
             }
+
+            else if (chosenPattern == '0') {
+                phase0 = 0;
+                Pattern0(phase0); // set default (initial) light pattern for pattern 0
+                while (chosenPattern == '0') { 
+                    if (next_pattern) {
+                        next_pattern = 0;
+                        Pattern0(phase0); // static so phase isn't needed
+                    }
+                    rows = P3IN; // constantly listen for an input
+                    rows &= 0b11110000; // clear any values on lower 4 bits
+                    if (rows != 0b00000000) {
+                        lastInput = readInput();
+                        if (lastInput == 'D') {
+                            chosenPattern = 'D'; // lock device
+                        } 
+                        else if (lastInput == '1' || lastInput == '2' || lastInput == '3') {
+                            chosenPattern = lastInput;
+                        }
+                        else {
+                            
+                        }
+                    }
+                }
+            }
+
             else {
                 lastInput = readInput();
                 chosenPattern = lastInput;
