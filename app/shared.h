@@ -7,6 +7,8 @@ extern volatile unsigned int red_counter;
 extern volatile unsigned int green_counter;
 extern volatile unsigned int blue_counter;
 
+extern volatile unsigned int limit_reached;
+
 extern volatile system_states state;
 
 #endif // SHARED_H

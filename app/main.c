@@ -13,6 +13,8 @@
 volatile unsigned int red_counter = 0;
 volatile unsigned int green_counter = 0;
 volatile unsigned int blue_counter = 0;
+
+volatile unsigned int limit_reached = 0;
 volatile unsigned int pwms = 0;
 volatile unsigned int next_pattern = 0;
 
@@ -49,6 +51,11 @@ int main(void)
     TB1CCR0 = 32768;                            //sets Timer B0 to 1 second (32.768 kHz)
     TB1CTL = TBSSEL_1 | ID_0 | MC__UP | TBCLR;    //ACLK, No divider, Up mode, Clear timer
 
+    // set timer for password
+    TB3CTL = TBSSEL__ACLK | ID_0 | MC__UP | TBCLR;
+    TB3EX0 |= TBIDEX_4; // divide by 5
+    TB3CCR0 = 1; // 1 for now to ensure that timer virtually starts at 0, 35000  is slightly more than 5 seconds
+    TB3CCTL0 &= ~CCIE; // do not trigger interrupts yet
 
     // Disable the GPIO power-on default high-impedance mode to activate
     // previously configure port settings
@@ -296,4 +303,10 @@ __interrupt void TIMERB1_ISR(void) {
 __interrupt void TIMERB2_ISR(void) {
     next_pattern = 1;
     TB2CCTL0 &= ~CCIFG;
+} 
+
+#pragma vector = TIMER3_B0_VECTOR
+__interrupt void TIMERB3_ISR(void) {
+    limit_reached = 1;
+    TB3CCTL0 &= ~CCIFG;
 } 
