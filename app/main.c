@@ -71,8 +71,8 @@ int main(void)
         // turn status LED Blue here
         state = UNLOCKED;
         update_color(state);
-        char lastInput = '0';
-        while (lastInput != '1' && lastInput != '2' && lastInput != '3' && lastInput != 'D') {
+        char lastInput = 'X';
+        while (lastInput != '0' && lastInput != '1' && lastInput != '2' && lastInput != '3' && lastInput != 'D') {
             lastInput = readInput(); // stays here until user chooses a pattern, or chooses to lock the system
         }
         char chosenPattern = lastInput;
@@ -107,7 +107,7 @@ int main(void)
                                 TB2CCR0 = TB2CCR0 + 6250;
 
                             }
-                            else if (lastInput == '2' || lastInput == '3') {
+                            else if (lastInput == '0' || lastInput == '2' || lastInput == '3') {
                                 chosenPattern = lastInput;
                             }
                             else {
@@ -148,7 +148,7 @@ int main(void)
                                 TB2CCR0 = TB2CCR0 + 6250;
 
                             }
-                            else if (lastInput == '1' || lastInput == '3') {
+                            else if (lastInput == '0' || lastInput == '1' || lastInput == '3') {
                                 chosenPattern = lastInput;
                             }
                             else {
@@ -189,7 +189,7 @@ int main(void)
                                 TB2CCR0 = TB2CCR0 + 6250;
 
                             }
-                            else if (lastInput == '1' || lastInput == '2') {
+                            else if (lastInput == '0' || lastInput == '1' || lastInput == '2') {
                                 chosenPattern = lastInput;
                             }
                             else {
@@ -202,6 +202,32 @@ int main(void)
                     next_pattern = 0;
                 }
             }
+
+            else if (chosenPattern == '0') {
+                phase = 0;
+                Pattern0(phase); // set default (initial) light pattern for pattern 1
+                while (chosenPattern == '0') { 
+                    if (next_pattern) {
+                        next_pattern = 0;
+                        Pattern0(phase); // static so phase isn't needed
+                    }
+                    rows = P3IN; // constantly listen for an input
+                    rows &= 0b11110000; // clear any values on lower 4 bits
+                    if (rows != 0b00000000) {
+                        lastInput = readInput();
+                        if (lastInput == 'D') {
+                            chosenPattern = 'D'; // lock device
+                        } 
+                        else if (lastInput == '1' || lastInput == '2' || lastInput == '3') {
+                            chosenPattern = lastInput;
+                        }
+                        else {
+                            
+                        }
+                    }
+                }
+            }
+
             else {
                 lastInput = readInput();
                 chosenPattern = lastInput;
