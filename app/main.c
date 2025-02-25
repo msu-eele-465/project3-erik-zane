@@ -34,6 +34,9 @@ int main(void)
     P1DIR |= BIT0;                              // Sets P1.0 as an output
     P1OUT &= ~BIT0;                             // Initializes LED to OFF
 
+    P6DIR |= BIT6;                              // LED for debugging       
+    P6OUT &= ~BIT6;
+
     P3DIR &= ~0b11110000; // set all keypad rows to inputs pulled low
     P3REN |= 0b11111111; // permanently set all of port 3 to have resistors
     P3OUT &= ~0b11110000; // pull down resistors
@@ -162,7 +165,7 @@ int main(void)
             else if (chosenPattern == '3') {
                 phase = 0;
                 Pattern3(phase); // set default (initial) light pattern for pattern 3
-                while (chosenPattern == 3) { 
+                while (chosenPattern == '3') { 
                     if (phase < 5) {
                         phase ++;
                     }
