@@ -132,10 +132,8 @@ int main(void)
                         }
                     }
                     // wait for interval to end (likely use timer ISR to set variable), however, trial-error while-loops also likely work
-                    if (chosenPattern == '1') {
-                        Pattern1(phase1);
-                        next_pattern = 0;
-                    }
+                    Pattern1(phase1);
+                    next_pattern = 0;
                 }
             }     
                 
@@ -177,12 +175,9 @@ int main(void)
                         }
                     }
                     // wait for interval to end (likely use timer ISR to set variable), however, trial-error while-loops also likely work
-                    if (chosenPattern == '2') {
-                        Pattern2(phase2);
-                        next_pattern = 0;
-                    }
+                    Pattern2(phase2);
+                    next_pattern = 0;
                 }
-
             }
             else if (chosenPattern == '3') {
                 Pattern3(phase3); // set default (initial) light pattern for pattern 3
@@ -222,10 +217,8 @@ int main(void)
                         }
                     }
                     // wait for interval to end (likely use timer ISR to set variable), however, trial-error while-loops also likely work
-                    if (chosenPattern == '3') {
-                        Pattern3(phase3);
-                        next_pattern = 0;
-                    }
+                    Pattern3(phase3);
+                    next_pattern = 0;
                 }
             }
 
@@ -289,10 +282,8 @@ int main(void)
                             }
                         }
                     }
-                    if (chosenPattern == '4') {
-                        Pattern4(phase4);
-                        next_pattern = 0;
-                    }
+                    Pattern4(phase4);
+                    next_pattern = 0;
                 }
             }
 
@@ -334,10 +325,8 @@ int main(void)
                         }
                     }
                     // wait for interval to end (likely use timer ISR to set variable), however, trial-error while-loops also likely work
-                    if (chosenPattern == '5') {
-                        Pattern5(phase5);
-                        next_pattern = 0;
-                    }
+                    Pattern5(phase5);
+                    next_pattern = 0;
                 }
             }
 
@@ -379,10 +368,8 @@ int main(void)
                         }
                     }
                     // wait for interval to end (likely use timer ISR to set variable), however, trial-error while-loops also likely work
-                    if (chosenPattern == '6') {
-                        Pattern6(phase6);
-                        next_pattern = 0;
-                    }
+                    Pattern6(phase6);
+                    next_pattern = 0;
                 }
             }
 
@@ -424,10 +411,8 @@ int main(void)
                         }
                     }
                     // wait for interval to end (likely use timer ISR to set variable), however, trial-error while-loops also likely work
-                    if (chosenPattern == '7') {
-                        Pattern7(phase7);
-                        next_pattern = 0;
-                    }
+                    Pattern7(phase7);
+                    next_pattern = 0;
                 }
             }
 
